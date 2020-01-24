@@ -13,17 +13,18 @@ import (
 )
 
 func main() {
+	start := time.Now()
 	var r results
 	for _, relPath := range targets(os.Args[1:]) {
 		fmt.Printf("-> %s ... ", relPath)
 
 		// Check a (potential) rule directory.
-		start := time.Now()
+		ruleStart := time.Now()
 		absPath, err := filepath.Abs(relPath)
 		if err == nil {
 			err = check.TestRule(absPath)
 		}
-		elapsed := getElapsed(start)
+		elapsed := getElapsed(ruleStart)
 		r.Add(err)
 
 		// Show outcome inline.
@@ -50,6 +51,7 @@ func main() {
 	}
 
 	// Show summary.
+	fmt.Println("Finished!", getElapsed(start))
 	fmt.Println(r)
 	if r.Count() != r.Success {
 		os.Exit(1)
